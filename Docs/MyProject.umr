@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <id>1</id>
+  <Name>My Project</Name>
+  <XmlFileName>\App_Data\CNNFeed.xml</XmlFileName>
+  <UmbRootId>-1</UmbRootId>
+  <Preview>false</Preview>
+  <LogAllAction>false</LogAllAction>
+  <OldSchema>false</OldSchema>
+  <Period>-1</Period>
+  <Dayofweek>monday</Dayofweek>
+  <Dayofmonth>1</Dayofmonth>
+  <TriggerProyect xsi:nil="true" />
+  <StartHour>0</StartHour>
+  <StartMinute>1</StartMinute>
+  <RootNodeID xsi:nil="true" />
+  <ExtensionMethod>App_Code, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;CNNNewsUMirrorProxy</ExtensionMethod>
+  <Nodes>
+    <Node>
+      <id>3</id>
+      <UmbIdentifierProperty>date</UmbIdentifierProperty>
+      <XmlIdentifierXPath>@value</XmlIdentifierXPath>
+      <XmlNodeNameXPath>@value</XmlNodeNameXPath>
+      <LevelNumber xsi:nil="true" />
+      <TruncateNodeName xsi:nil="true" />
+      <IgnoreNodeName>false</IgnoreNodeName>
+      <NeverDelete>false</NeverDelete>
+      <OnlyAdd>false</OnlyAdd>
+      <XmlDocumentXPath>//Year</XmlDocumentXPath>
+      <ParentId xsi:nil="true" />
+      <ProjectId>1</ProjectId>
+      <UmbDocumentTypeAlias>CNNDateFolder</UmbDocumentTypeAlias>
+      <Enable>false</Enable>
+      <Properties>
+        <Property>
+          <id>4</id>
+          <UmbPropertyAlias>date</UmbPropertyAlias>
+          <XmlPropertyXPath>@value</XmlPropertyXPath>
+          <Ignore>false</Ignore>
+          <InitLikeXml>false</InitLikeXml>
+          <NodeID>3</NodeID>
+        </Property>
+      </Properties>
+      <Nodes>
+        <Node>
+          <id>4</id>
+          <UmbIdentifierProperty>date</UmbIdentifierProperty>
+          <XmlIdentifierXPath>@value</XmlIdentifierXPath>
+          <XmlNodeNameXPath>@value</XmlNodeNameXPath>
+          <LevelNumber xsi:nil="true" />
+          <TruncateNodeName xsi:nil="true" />
+          <IgnoreNodeName>false</IgnoreNodeName>
+          <NeverDelete>false</NeverDelete>
+          <OnlyAdd>false</OnlyAdd>
+          <XmlDocumentXPath>./Month</XmlDocumentXPath>
+          <ParentId>3</ParentId>
+          <ProjectId xsi:nil="true" />
+          <UmbDocumentTypeAlias>CNNDateFolder</UmbDocumentTypeAlias>
+          <Enable>false</Enable>
+          <Properties>
+            <Property>
+              <id>6</id>
+              <UmbPropertyAlias>date</UmbPropertyAlias>
+              <XmlPropertyXPath>@value</XmlPropertyXPath>
+              <Ignore>false</Ignore>
+              <InitLikeXml>false</InitLikeXml>
+              <NodeID>4</NodeID>
+            </Property>
+          </Properties>
+          <Nodes>
+            <Node>
+              <id>5</id>
+              <UmbIdentifierProperty>pubdate</UmbIdentifierProperty>
+              <XmlIdentifierXPath>pubdate</XmlIdentifierXPath>
+              <XmlNodeNameXPath>title</XmlNodeNameXPath>
+              <LevelNumber xsi:nil="true" />
+              <TruncateNodeName xsi:nil="true" />
+              <IgnoreNodeName>false</IgnoreNodeName>
+              <NeverDelete>false</NeverDelete>
+              <OnlyAdd>false</OnlyAdd>
+              <XmlDocumentXPath>./item</XmlDocumentXPath>
+              <ParentId>4</ParentId>
+              <ProjectId xsi:nil="true" />
+              <UmbDocumentTypeAlias>CNNNews</UmbDocumentTypeAlias>
+              <Enable>false</Enable>
+              <Properties>
+                <Property>
+                  <id>1</id>
+                  <UmbPropertyAlias>url</UmbPropertyAlias>
+                  <XmlPropertyXPath>url</XmlPropertyXPath>
+                  <Ignore>false</Ignore>
+                  <InitLikeXml>false</InitLikeXml>
+                  <NodeID>5</NodeID>
+                </Property>
+                <Property>
+                  <id>2</id>
+                  <UmbPropertyAlias>pubdate</UmbPropertyAlias>
+                  <XmlPropertyXPath>pubdate</XmlPropertyXPath>
+                  <Ignore>false</Ignore>
+                  <InitLikeXml>false</InitLikeXml>
+                  <NodeID>5</NodeID>
+                </Property>
+                <Property>
+                  <id>3</id>
+                  <UmbPropertyAlias>summary</UmbPropertyAlias>
+                  <XmlPropertyXPath>summary</XmlPropertyXPath>
+                  <Ignore>false</Ignore>
+                  <InitLikeXml>false</InitLikeXml>
+                  <NodeID>5</NodeID>
+                </Property>
+              </Properties>
+              <Nodes />
+            </Node>
+          </Nodes>
+        </Node>
+      </Nodes>
+    </Node>
+  </Nodes>
+</Project>

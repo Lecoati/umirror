@@ -1,0 +1,20 @@
+# git ignore file
+Package
+/Src/Lct_uSync.ui/obj
+/Src/Lct_uSync.ui/bin
+/Src/Lct_uSync.core/obj
+/Src/Lct_uSync.core/bin
+/Build
+/Package
+/Src/Lct_uSync/obj
+/Src/Lct_uSync/bin
+/Src/Lct_uSync/bin
+/Lct_uMirror.suo
+/Lct_uMirror.v12.suo
+
+/Src/Lecoati.uMirror/obj
+/Src/Lecoati.uMirror/bin
+/Lecoati.uMirror.v12.suo
+/Lecoati.uMirror.suo
+/Lecoati.uSync.v11.suo
+/Src/Lecoati.uMirror/Lecoati.uMirror.csproj.user

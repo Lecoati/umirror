@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<umbPackage>
+  <files>
+  </files>
+  <info>
+    <package>
+      <name>Lecoati.uMirror</name>
+      <version>0.9.0</version>
+      <license url="http://www.opensource.org/licenses/mit-license.php">MIT license</license>
+      <url>http://www.lecoati.com</url>
+      <requirements>
+        <major>4</major>
+        <minor>11</minor>
+        <patch>3</patch>
+      </requirements>
+    </package>
+    <author>
+      <name>Lecoatí</name>
+      <website>http://www.lecoati.com</website>
+    </author>
+    <readme></readme>
+  </info>
+  <DocumentTypes />
+  <Templates />
+  <Stylesheets />
+  <Macros />
+  <DictionaryItems />
+  <Languages />
+  <DataTypes />
+  <Actions>
+	<Action runat="install" undo="true" alias="AddLanguageFileKey" language="en" position="end" area="sections" key="uMirror" value="uMirror" />
+	<Action runat="install" undo="true" alias="AddLanguageFileKey" language="en" position="end" area="actions" key="CreateNode" value="Create Node" />
+	<Action runat="install" undo="true" alias="AddLanguageFileKey" language="en" position="end" area="actions" key="uMirrorExport" value="Export project" />
+	<Action runat="install" undo="true" alias="AddLanguageFileKey" language="en" position="end" area="actions" key="uMirrorImport" value="Import project" />
+	<Action runat="install" undo="true" alias="AddLanguageFileKey" language="en" position="end" area="actions" key="uMirrorStart" value="Start" />
+	<Action runat="install" undo="true" alias="AddTreeNodeType">
+		<nodeType alias="initprojects">
+			<header>Project</header>
+			<usercontrol>/plugins/uMirror/create/createNodeProject.ascx</usercontrol>
+			<tasks>
+			  <create assembly="Lecoati.uMirror" type="loadProjectTasks" />
+			  <delete assembly="Lecoati.uMirror" type="loadProjectTasks" />
+			</tasks>
+		</nodeType>
+		<nodeType alias="initnodes">
+			<header>Node</header>
+			<usercontrol>/plugins/uMirror/create/createNodeProject.ascx</usercontrol>
+			<tasks>
+			  <create assembly="Lecoati.uMirror" type="loadNodeTasks" />
+			  <delete assembly="Lecoati.uMirror" type="loadNodeTasks" />
+			</tasks>
+		</nodeType>
+	</Action>
+	<Action runat="install" undo="true" alias="AddScheduledTask" scheduledTaskAlias="uMirrorScheduledTaskHandler" log="false" interval="60" url="/umbraco/plugins/uMirror/ScheduledTaskHandler.ashx" />
+    <Action runat="install" undo="false" alias="ExecuteSql">
+	<![CDATA[
+
+	CREATE TABLE uMirrorProperty (
+		id int IDENTITY(1,1) PRIMARY KEY NOT NULL,
+		UmbPropertyAlias nvarchar(100)  NULL,
+		XmlPropertyXPath nvarchar(300)  NULL,
+		Ignore bit  NULL,
+		MediaParent int  NULL,
+		InitLikeXml bit  NULL,
+		NodeID int  NOT NULL
+	)
+
+	]]>
+    </Action>
+      <Action runat="install" undo="false" alias="ExecuteSql">
+        <![CDATA[
+
+	CREATE TABLE uMirrorNode (
+		id int IDENTITY(1,1) PRIMARY KEY NOT NULL,
+		UmbIdentifierProperty nvarchar(150)  NULL,
+		XmlIdentifierXPath nvarchar(300)  NULL,
+		XmlNodeNameXPath nvarchar(300)  NULL,
+		LevelNumber int  NULL,
+		TruncateNodeName int  NULL,
+		IgnoreNodeName bit  NULL,
+		NeverDelete bit  NULL,
+		OnlyAdd bit  NULL,
+		XmlDocumentXPath nvarchar(150)  NULL,
+		ParentId int  NULL,
+		ProjectId int  NULL,
+		UmbDocumentTypeAlias nvarchar(200)  NULL,
+		Enable bit  NULL
+	)
+
+
+
+	]]>
+      </Action>
+        <Action runat="install" undo="false" alias="ExecuteSql">
+          <![CDATA[
+
+	CREATE TABLE uMirrorProject (
+		id int IDENTITY(1,1) PRIMARY KEY NOT NULL,
+		Name nvarchar(100)  NOT NULL,
+		XmlFileName nvarchar(100)  NULL,
+		UmbRootId int  NULL,
+		Preview bit  NULL,
+		LogAllAction bit  NULL,
+		OldSchema bit  NULL,
+		Period int  NULL,
+		Dayofweek nvarchar(20)  NULL,
+		Dayofmonth nvarchar(20)  NULL,
+		TriggerProyect int  NULL,
+		StartHour int  NULL,
+		StartMinute int  NULL,
+		RootNodeID int  NULL,
+		ExtensionMethod nvarchar(500)  NULL
+	)
+
+
+
+	]]>
+	</Action>
+	<Action runat="uninstall" undo="false" alias="ExecuteSql">
+	<![CDATA[
+		DROP TABLE uMirrorProperty;
+		DROP TABLE uMirrorNode;
+		DROP TABLE uMirrorProject;
+	]]>
+	</Action>
+  </Actions>
+</umbPackage>
