@@ -394,11 +394,8 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(TargetDir)Lecoati.uMirror.dll" "$(SolutionDir)Src\phr_ferring.web.ui\bin"
-xcopy /s /y "$(ProjectDir)UI\Dialogs\*.aspx" "$(SolutionDir)Src\phr_ferring.web.ui\Umbraco\Plugins\uMirror\Dialogs"
-xcopy /s /y "$(ProjectDir)UI\Create\*.ascx" "$(SolutionDir)Src\phr_ferring.web.ui\Umbraco\Plugins\uMirror\Create"
-xcopy /s /y "$(ProjectDir)UI\Scheduler\*.ashx" "$(SolutionDir)Src\phr_ferring.web.ui\Umbraco\Plugins\uMirror"
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
