@@ -9,9 +9,9 @@
       <license url="http://www.opensource.org/licenses/mit-license.php">MIT license</license>
       <url>http://www.lecoati.com</url>
       <requirements>
-        <major>4</major>
-        <minor>11</minor>
-        <patch>3</patch>
+        <major>0</major>
+        <minor>0</minor>
+        <patch>0</patch>
       </requirements>
     </package>
     <author>

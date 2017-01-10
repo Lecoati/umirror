@@ -243,16 +243,25 @@ namespace Lecoati.uMirror.Bll
             List<Type> types = new List<Type>();
             foreach (Assembly assembly in assemblies)
             {
-                foreach (Type t in assembly.GetTypes())
+                try
                 {
-                    if (t.IsSubclassOf(typeof(uMirrorExtension)))
+                    foreach (Type t in assembly.GetTypes())
                     {
-                        if (!types.Exists(type => type.Equals(t)))
+                        if (t.IsSubclassOf(typeof(uMirrorExtension)))
                         {
-                            result = result.Concat(t.GetMethods().Where(m => m.GetCustomAttributes(typeof(UMirrorProxy), false).Length > 0).ToList()).ToList();
+                            if (!types.Exists(type => type.Equals(t)))
+                            {
+                                result =
+                                    result.Concat(
+                                        t.GetMethods()
+                                            .Where(m => m.GetCustomAttributes(typeof(UMirrorProxy), false).Length > 0)
+                                            .ToList()).ToList();
+                            }
                         }
                     }
                 }
+                catch {}
+
             }
             return result;
         }
