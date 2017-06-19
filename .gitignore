@@ -18,3 +18,5 @@ Package
 /Lecoati.uMirror.suo
 /Lecoati.uSync.v11.suo
 /Src/Lecoati.uMirror/Lecoati.uMirror.csproj.user
+/.vs
+/packages
