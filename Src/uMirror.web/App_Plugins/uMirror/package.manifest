@@ -1,0 +1,9 @@
+﻿{
+	javascript: [
+		'~/App_Plugins/uMirror/umirror.resources.js',
+		'~/App_Plugins/uMirror/backoffice/uMirror/umirror.projecteditcontroller.js',
+		'~/App_Plugins/uMirror/backoffice/uMirror/umirror.nodeeditcontroller.js',
+		'~/App_Plugins/uMirror/backoffice/uMirror/umirror.projectdeletecontroller.js',
+		'~/App_Plugins/uMirror/backoffice/uMirror/umirror.startcontroller.js'
+	]
+}

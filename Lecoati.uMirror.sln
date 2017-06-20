@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Web
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lecoati.uMirror", "Src\Lecoati.uMirror\Lecoati.uMirror.csproj", "{7B21F28F-6B77-45FE-8B27-2886E2495ED0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uMirror.core", "Src\uMirror.core\uMirror.core.csproj", "{A05E6E73-73F1-4968-84EC-8BFA94F70734}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "umbraco.site", "Src\uMirror.web\umbraco.site.csproj", "{E1F356E3-7A94-4B22-B50E-A2BED96DDE0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7B21F28F-6B77-45FE-8B27-2886E2495ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B21F28F-6B77-45FE-8B27-2886E2495ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B21F28F-6B77-45FE-8B27-2886E2495ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B21F28F-6B77-45FE-8B27-2886E2495ED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A05E6E73-73F1-4968-84EC-8BFA94F70734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A05E6E73-73F1-4968-84EC-8BFA94F70734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A05E6E73-73F1-4968-84EC-8BFA94F70734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A05E6E73-73F1-4968-84EC-8BFA94F70734}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1F356E3-7A94-4B22-B50E-A2BED96DDE0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1F356E3-7A94-4B22-B50E-A2BED96DDE0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1F356E3-7A94-4B22-B50E-A2BED96DDE0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1F356E3-7A94-4B22-B50E-A2BED96DDE0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
