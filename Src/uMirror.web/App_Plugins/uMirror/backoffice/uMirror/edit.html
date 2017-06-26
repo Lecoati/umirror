@@ -6,12 +6,10 @@
     <umb-panel>
 
         <umb-header>
-
             <div class="span7">
                 <umb-content-name placeholder="@placeholders_entername"
                                   ng-model="project.Name" />
             </div>
-
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <umb-options-menu ng-show="currentNode"
@@ -20,42 +18,44 @@
                     </umb-options-menu>
                 </div>
             </div>
-
         </umb-header>
 
         <div class="umb-panel-body umb-scrollable row-fluid">
             <div class="tab-content form-horizontal" style="padding-bottom: 90px">
+
+                <div class="umb-pane" ng-show="appStart">
+                    <umb-control-group label="Current process runing" description="ex: /App_Data/MyData.xml">
+                        <img src="/App_Plugins/uMirror/images/ajax-loader.gif" style="margin-right:5px" />
+                        {{currentAppNum}}
+                        <button type="submit" class="btn btn-success">
+                            Cancel
+                        </button>
+                    </umb-control-group>
+                </div>
+
                 <div class="umb-pane">
 
                     <umb-control-group label="Xml File Path" description="ex: /App_Data/MyData.xml">
-                                                
-                        <select name="dropDownList" style="width: 200px;" ng-model="model.value" ng-options="item.id as item.value for item in model.config.items">
-                        </select>
-                        
+                        <select name="dropDownList" style="width: 200px;" ng-model="model.value" ng-options="item.id as item.value for item in model.config.items"></select>
                         <input type="text" style="width: 200px;" ng-model="project.XmlFileName" required />
-
                         <img id="runSelectedMethodWait" src="/umbraco/plugins/uMirror/images/ajax-loader.gif" style="display:none;" />
-
                     </umb-control-group>
 
                     <umb-control-group label="Last name" description="Person's last name'">
-                        
                         <div ng-show="project.UmbRootNode">
                             <i class="icon icon-delete red hover-show pull-left" ng-click="project.UmbRootNode = undefined"></i>
                             <i class="icon {{project.UmbRootNode.Icon}} hover-hide"></i>
                             <a href prevent-default ng-click="setParent()">{{project.UmbRootNode.Name}}</a>
                         </div>
-
                         <div ng-show="!project.UmbRootNode">
                             <i class="icon icon-add blue"></i>
                             <a href ng-click="setParent()" prevent-default><localize key="general_add">Add</localize></a>
                         </div>
-
                     </umb-control-group>
 
                     <div class="umb-tab-buttons" detect-fold>
                         <div class="btn-group">
-                            <button type="submit" data-hotkey="ctrl+s" class="btn btn-success">
+                            <button type="submit" ng-disabled="appStart" data-hotkey="ctrl+s" class="btn btn-success">
                                 <localize key="buttons_save">Save</localize>
                             </button>
                         </div>

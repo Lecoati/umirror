@@ -1,21 +1,35 @@
 ﻿angular.module("umbraco").controller("umirror.projecteditcontroller",
 	function ($scope, $routeParams, umirrorResources, notificationsService, navigationService, dialogService) {
 
-	    $scope.loaded = false;  
+        $scope.loaded = false;  
+        $scope.appStart = false;
+        
+        var refreshAppState = function () {
+            umirrorResources.getapplock().then(function (response) {
+                if (response.data === "false") {
+                    clearInterval($scope.refreshAppStateInterval);
+                }
+            });
+            umirrorResources.getAppNum().then(function (response) {
+                $scope.currentAppNum = response.data;
+            });
+        } 
 
-	    $scope.proxyMethods = umirrorResources.getProxyMethods();
+        var init = function () {
+            $scope.proxyMethods = umirrorResources.getProxyMethods();
 
-	    if ($routeParams.id == -1) {
-	        $scope.project = {};
-	        $scope.isProject = true;
-	        $scope.loaded = true;
-	    }
-	    else if ($routeParams.id.indexOf("project_") !== -1 && !$routeParams.create) {
-	        umirrorResources.getProjectById($routeParams.id.replace("project_","")).then(function (response) {
-	            $scope.project = response.data;
-	            $scope.loaded = true;
-	        });
-	    }
+            if ($routeParams.id == -1) {
+                $scope.project = {};
+                $scope.isProject = true;
+                $scope.loaded = true;
+            }
+            else if ($routeParams.id.indexOf("project_") !== -1 && !$routeParams.create) {
+                umirrorResources.getProjectById($routeParams.id.replace("project_", "")).then(function (response) {
+                    $scope.project = response.data;
+                    $scope.loaded = true;
+                });
+            }
+        } 
 
 	    $scope.setParent = function () {
 	        dialogService.treePicker({
@@ -43,5 +57,16 @@
 	        });
 	    };
 
+        umirrorResources.getapplock().then(function (response) {
+            $scope.isAppLock = response.data;
+            if (response.data === "true") {
+                $scope.appStart = true;
+                $scope.loaded = true;
+                $scope.refreshAppStateInterval = setInterval(refreshAppState, 5000);
+            }
+            else {
+                init();
+            }
+        });
 
 	});

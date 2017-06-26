@@ -20,14 +20,7 @@ namespace uMirror.core.Controllers
     public class uMirrorApiController : UmbracoAuthorizedJsonController
     {
 
-        public void PutStart(int id)
-        {
-            Synchronizer sync = new Synchronizer();            
-            sync.context = HttpContext.Current;
-            sync.projectid = id;
-            sync.currentUser = umbraco.BusinessLogic.User.GetCurrent();
-            sync.start();
-        }
+        #region "backend"
 
         public Project GetProjectById(int id)
         {
@@ -124,7 +117,7 @@ namespace uMirror.core.Controllers
 
         }
 
-        public IEnumerable<core.Models.Property> GetProperties(string docTypeAlias)
+        public IEnumerable<Models.Property> GetProperties(string docTypeAlias)
         {
             return LoadDdlUmbIdentifierProperty(docTypeAlias).Select(r => new core.Models.Property() {
                 Alias = r.Alias,
@@ -170,6 +163,63 @@ namespace uMirror.core.Controllers
             ContentType docType = (ContentType)ApplicationContext.Current.Services.ContentTypeService.GetContentType(docTypeAlias);
             return docType.CompositionPropertyTypes.ToList();
         }
+
+        #endregion
+
+        #region "sync method"
+
+        public void PutStart(int id)
+        {
+            var sync = new Synchronizer()
+            {
+                context = HttpContext.Current,
+                projectid = id,
+                currentUser = umbraco.BusinessLogic.User.GetCurrent()
+            };
+            sync.start();
+        }
+
+        public void PutStop()
+        {
+            new Synchronizer().stop();  
+        }
+
+        public string StartMethod(String assemblyRef)
+        {
+            try
+            {
+                var sync = new Synchronizer();
+                sync.startMethod(assemblyRef);
+                return "done";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public string GetAppNum()
+        {
+
+            string state = Synchronizer.appState.ToString();
+            if (Synchronizer.appCancel) return "Canceling process, please wait ... ";
+
+            if (Synchronizer.appLock)
+                return  "skipped: <b><span style=\"color:green\">" + Synchronizer.appNumSki.ToString() +
+                        " </span></b>updated: <b><span style=\"color:green\">" + Synchronizer.appNumUpd.ToString() +
+                        " </span></b>added: <b><span style=\"color:green\">" + Synchronizer.appNumAdd.ToString() +
+                        " </span></b>deleted: <b><span style=\"color:green\">" + Synchronizer.appNumDel.ToString() +
+                        " </span></b>error: <b><span style=\"color:red\">" + Synchronizer.appNumErr.ToString() + "</span></b>" /*+ " )"*/;
+            else
+                return "";
+        }
+
+        public bool Getapplock()
+        {
+            return Synchronizer.appLock;
+        }
+
+        #endregion
 
     }
 

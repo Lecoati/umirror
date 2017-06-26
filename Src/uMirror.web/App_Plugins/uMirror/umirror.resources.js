@@ -34,5 +34,17 @@
         start: function (id) {
             return $http.put("backoffice/uMirror/uMirrorApi/PutStart?id=" + id);
         },
+        stop: function (id) {
+            return $http.put("backoffice/uMirror/uMirrorApi/PutStop");
+        },
+        startMethod: function (assemblyRef) {
+            return $http.get("backoffice/uMirror/uMirrorApi/StartMethod?assemblyRef=" + assemblyRef);
+        },
+        getAppNum: function () {
+            return $http.get("backoffice/uMirror/uMirrorApi/GetAppNum");
+        },
+        getapplock: function () {
+            return $http.get("backoffice/uMirror/uMirrorApi/Getapplock");
+        }
     };
  });

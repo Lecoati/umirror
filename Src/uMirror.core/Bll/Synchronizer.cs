@@ -288,7 +288,7 @@ namespace uMirror.core.Bll
                         Util.UpdateStateAndLogs( _projectName, Util.LogType.info, "Process start", true); 
 
                         // Init value
-                        IList<Node> currentFirstNodes = project.Nodes.Where(r => r.ParentId == null).ToList(); // First nodes
+                        IList<Node> currentFirstNodes = project.Nodes.Where(r => r.ParentId == -1).ToList(); // First nodes
                         preview = (bool)project.Preview; // Preview
                         rootParentId = (int)project.UmbRootId; // root parent Id
 
