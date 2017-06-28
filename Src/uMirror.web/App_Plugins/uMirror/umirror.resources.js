@@ -34,7 +34,7 @@
         start: function (id) {
             return $http.put("backoffice/uMirror/uMirrorApi/PutStart?id=" + id);
         },
-        stop: function (id) {
+        stop: function () {
             return $http.put("backoffice/uMirror/uMirrorApi/PutStop");
         },
         startMethod: function (assemblyRef) {
