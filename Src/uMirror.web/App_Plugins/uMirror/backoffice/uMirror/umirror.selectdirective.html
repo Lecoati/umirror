@@ -1,0 +1,5 @@
+﻿<div>
+    <select name="dropDownList" style="width: 200px;"
+            ng-model="result.selectedElement" ng-options="item.Id as item.Name for item in elements"></select>
+    <input ng-show="result.selectedElement == elements.length - 1" type="text" style="width: 200px;" ng-model="result.otherValue" />
+</div>

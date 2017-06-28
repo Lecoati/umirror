@@ -37,7 +37,7 @@
 	        });
 	    }
 
-	    $scope.init = function () {
+        $scope.init = function () {
 	        umirrorResources.getDocumentTypes().then(function (response) {
 	            $scope.documentTypes = response.data;
 	            $scope.loaded = true;
@@ -45,10 +45,10 @@
 	        umirrorResources.getElements($scope.node.ProjectId, true).then(function (response) {
 	            $scope.elementsWithPrefix = response.data;
 	        });
-	        umirrorResources.getElements($scope.node.ProjectId, false).then(function (response) {
-	            $scope.elements = response.data;
+            umirrorResources.getElements($scope.node.ProjectId, false).then(function (response) {
+                $scope.elements = response.data;
 	        });
-	    };
+        };
 
 	    $scope.documentTypeChange = function () {
 	        angular.forEach($scope.documentTypes, function (value, key) {
@@ -58,7 +58,8 @@
 	        });
 	        umirrorResources.getProperties($scope.node.UmbDocumentTypeAlias).then(function (response) {
 	            $scope.Properties = response.data;
-	            angular.forEach($scope.Properties, function (value, key) {
+                $scope.node.Properties = [];
+                angular.forEach($scope.Properties, function (value, key) {
 	                $scope.node.Properties.push({
 	                    UmbPropertyAlias: value.Alias,
 	                })
@@ -66,9 +67,10 @@
 	        });
 	    }
 
-	    $scope.save = function (node) {
+        $scope.save = function (node) {
+
 	        umirrorResources.saveNode(node).then(function (response) {
-	            $scope.node = response.data;
+                $scope.node = response.data;
 	            $scope.nodeForm.$dirty = false;
 	            navigationService.syncTree({ tree: 'uMirror', path: [-1, -1], forceReload: true });
 	            notificationsService.success("Success", $scope.node.UmbDocumentTypeAlias + " has been saved");

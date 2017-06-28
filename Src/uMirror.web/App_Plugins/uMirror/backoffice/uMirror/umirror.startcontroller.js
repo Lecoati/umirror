@@ -1,7 +1,5 @@
-﻿angular.module("umbraco").controller("uMirror.startController",
-    function ($scope, $location, $window, umirrorResources, navigationService) {
-        $scope.start = function (id) {
-            $location.path("/developer/uMirror/edit/" + id);
+﻿angular.module("umbraco").controller("uMirror.startController", function ($scope, $location, $window, umirrorResources, navigationService) {
+    $scope.start = function (id) {
         umirrorResources.start(id.replace("project_", ""))
         navigationService.syncTree({ tree: 'uMirror', path: [-1], forceReload: true });
         navigationService.hideNavigation();
@@ -12,5 +10,4 @@
     $scope.cancelDelete = function () {
         navigationService.hideNavigation();
     };
-
 });
