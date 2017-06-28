@@ -2,16 +2,29 @@
 	function ($scope, $routeParams, umirrorResources, notificationsService, navigationService, dialogService) {
 
         $scope.loaded = false;  
-        $scope.appStart = false;
+        $scope.isAppLock = false;
+        $scope.canceled = false;
+        $scope.log = [];
         
         var refreshAppState = function () {
-            umirrorResources.getapplock().then(function (response) {
-                if (response.data === "false") {
-                    clearInterval($scope.refreshAppStateInterval);
-                }
-            });
-            umirrorResources.getAppNum().then(function (response) {
-                $scope.currentAppNum = response.data;
+            $scope.$apply(function () {
+                umirrorResources.getapplock().then(function (response) {
+                    $scope.isAppLock = JSON.parse(response.data);
+
+                    if (!$scope.isAppLock) {
+                        clearInterval($scope.refreshAppStateInterval);
+                    }
+                });
+
+                umirrorResources.getAppNum().then(function (response) {
+                    var currentAppNum = JSON.parse(response.data);
+
+                    if ($scope.currentAppNum !== currentAppNum) {
+                        $scope.log.push(currentAppNum);
+                    }
+
+                    $scope.currentAppNum = currentAppNum;
+                });
             });
         } 
 
@@ -55,14 +68,23 @@
 	            navigationService.syncTree({ tree: 'uMirror', path: [-1, -1], forceReload: true });
 	            notificationsService.success("Success", $scope.project.Name + " has been saved");
 	        });
-	    };
+        };
+
+        $scope.cancel = function () {
+            umirrorResources.stop();
+            $scope.canceled = true;
+            notificationsService.error("Cancel", "The synchronization process for " + $scope.project.Name + " has been stopped");
+        };
 
         umirrorResources.getapplock().then(function (response) {
-            $scope.isAppLock = response.data;
-            if (response.data === "true") {
-                $scope.appStart = true;
-                $scope.loaded = true;
-                $scope.refreshAppStateInterval = setInterval(refreshAppState, 5000);
+            $scope.isAppLock = JSON.parse(response.data);
+            if ($scope.isAppLock) {
+                $scope.refreshAppStateInterval = setInterval(refreshAppState, 500);
+                $scope.proxyMethods = umirrorResources.getProxyMethods();
+                umirrorResources.getProjectById($routeParams.id.replace("project_", "")).then(function (response) {
+                    $scope.project = response.data;
+                    $scope.loaded = true;
+                });
             }
             else {
                 init();
