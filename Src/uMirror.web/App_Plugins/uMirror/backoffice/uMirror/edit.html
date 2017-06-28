@@ -1,0 +1,170 @@
+﻿<form name="projectForm"
+      ng-controller="umirror.projecteditcontroller"
+      ng-show="loaded"
+      ng-submit="save(project)"
+      val-form-manager>
+    <umb-panel>
+
+        <umb-header>
+            <div class="span7">
+                <umb-content-name placeholder="@placeholders_entername"
+                                  ng-model="project.Name" />
+            </div>
+            <div class="span5">
+                <div class="btn-toolbar pull-right umb-btn-toolbar">
+                    <umb-options-menu ng-show="currentNode"
+                                      current-node="currentNode"
+                                      current-section="{{currentSection}}">
+                    </umb-options-menu>
+                </div>
+            </div>
+        </umb-header>
+
+        <div class="umb-panel-body umb-scrollable row-fluid">
+            <div class="tab-content form-horizontal" style="padding-bottom: 90px">
+
+                <div class="umb-pane" ng-show="isAppLock">
+                    <umb-control-group label="Current process runing" description="Please, wait until the current process ends">
+                        <div style="margin-bottom: 15px;">
+                            <img src="/App_Plugins/uMirror/images/ajax-loader.gif" style="margin-right:5px" />
+                            <span ng-bind-html="currentAppNum"></span>
+                        </div>
+                        <button type="button" ng-click="cancel()" class="btn btn-danger">
+                            Cancel
+                        </button>
+                    </umb-control-group>
+                </div>
+
+                <div class="umb-pane" ng-show="!isAppLock && log.length">
+                    <umb-control-group label="Synchronization results" description="Results of the synchronization">
+                        <div>
+                            <img ng-if="!canceled" src="/App_Plugins/uMirror/images/check.png" style="margin-right:5px" />
+                            <img ng-if="canceled" src="/App_Plugins/uMirror/images/close.png" style="margin-right:5px" />
+                            <span ng-bind-html="log[log.length - 2]"></span>
+                        </div>
+                    </umb-control-group>
+                </div>
+
+                <div class="umb-pane">
+
+                    <umb-control-group label="Xml File Path" description="Ex: /App_Data/MyData.xml">
+                        <select name="dropDownList" style="width: 200px;" ng-model="model.value" ng-options="item.id as item.value for item in model.config.items">
+                            <option value="">none</option>
+                        </select>
+                        <input type="text" style="width: 200px;" ng-model="project.XmlFileName" required />
+                        <img id="runSelectedMethodWait" src="/umbraco/plugins/uMirror/images/ajax-loader.gif" style="display:none;" />
+                    </umb-control-group>
+
+                    <umb-control-group label="Parent node" description="The node where the synchronized nodes will be appended'">
+                        <div ng-show="project.UmbRootNode">
+                            <i class="icon icon-delete red hover-show pull-left" ng-click="project.UmbRootNode = undefined"></i>
+                            <i class="icon {{project.UmbRootNode.Icon}} hover-hide"></i>
+                            <a href prevent-default ng-click="setParent()">{{project.UmbRootNode.Name}}</a>
+                        </div>
+                        <div ng-show="!project.UmbRootNode">
+                            <i class="icon icon-add blue"></i>
+                            <a href ng-click="setParent()" prevent-default><localize key="general_add">Add</localize></a>
+                        </div>
+                    </umb-control-group>
+
+                    <div class="umb-tab-buttons" detect-fold>
+                        <div class="btn-group">
+                            <button type="submit" ng-disabled="isAppLock" data-hotkey="ctrl+s" class="btn btn-success">
+                                <localize key="buttons_save">Save</localize>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </umb-panel>
+</form>
+
+<form name="nodeForm"
+      ng-controller="umirror.nodeeditcontroller"
+      ng-show="loaded"
+      ng-submit="save(node)"
+      val-form-manager>
+
+    <umb-panel>
+
+        <umb-header>
+            <div class="span7">
+                    <select name="dropDownList" class="umb-editor umb-dropdown" style="margin: 22px 0 0 20px;"
+                            ng-model="node.UmbDocumentTypeAlias" ng-change="documentTypeChange()" ng-options="item.Alias as item.Alias for item in documentTypes"></select>
+            </div>
+            <div class="span5">
+                <div class="btn-toolbar pull-right umb-btn-toolbar">
+                    <umb-options-menu ng-show="currentNode"
+                                      current-node="currentNode"
+                                      current-section="{{currentSection}}">
+                    </umb-options-menu>
+                </div>
+            </div>
+        </umb-header>
+
+        <div class="umb-panel-body umb-scrollable row-fluid">
+
+            <div class="tab-content form-horizontal" style="padding-bottom: 90px">
+                <div class="umb-pane">
+                    <p class="umb-abstract">Source (xml)</p>
+                    <umb-control-group label="Elements" description="XPath to select the set of elements to import">
+                        <select-with-other ng-if="!!elements" data-value="node.XmlDocumentXPath" data-items="elements"></select-with-other>
+                    </umb-control-group>
+
+                    <umb-control-group label="Primary Key" description="XPath to select the Primary key value">
+                        <select-with-other ng-if="!!elementsWithPrefix" data-value="node.XmlIdentifierXPath" data-items="elementsWithPrefix"></select-with-other>
+                    </umb-control-group>
+
+                    <umb-control-group label="Node Name" description="XPath to select the node name value">
+                        <select-with-other ng-if="!!elementsWithPrefix" data-value="node.XmlNodeNameXPath" data-items="elementsWithPrefix"></select-with-other>
+                    </umb-control-group>
+                </div>
+                <div class="umb-pane">
+                    <p class="umb-abstract">Destination</p>
+                    <umb-control-group label="Foreign Key Property" description="Property where the foreign key will be stored">
+                        <select name="dropDownList" style="width: 200px;"
+                                ng-model="node.UmbIdentifierProperty" ng-options="item.Alias as item.Alias for item in Properties"></select>
+                    </umb-control-group>
+
+                    <umb-control-group label="Ignore Node Name" description="Do not compare and update the node name">
+                        <input type="checkbox" ng-model="node.IgnoreNodeName" />
+                    </umb-control-group>
+
+                    <umb-control-group label="Ignore Delete" description="Only add and update nodes, never delete">
+                        <input type="checkbox" ng-model="node.NeverDelete" />
+                    </umb-control-group>
+                </div>
+                <div class="umb-pane">
+                    <div ng-repeat="item in node.Properties">
+                        <p class="umb-abstract">Properties</p>
+                        <h3>{{item.UmbPropertyAlias}}</h3>
+
+                        <umb-control-group label="Property Selector" description="XPath to select the property value">
+                            <select name="dropDownList" style="width: 200px;"
+                                    ng-model="item.XmlPropertyXPath" ng-options="item.Value as item.Name for item in elementsWithPrefix"></select>
+                        </umb-control-group>
+
+                        <umb-control-group label="Ignore" description="Do not compare and update this property">
+                            <input type="checkbox" ng-model="item.Ignore" />
+                        </umb-control-group>
+
+                    </div>
+
+
+                    <div class="umb-tab-buttons" detect-fold>
+                        <div class="btn-group">
+                            <button type="submit" data-hotkey="ctrl+s" class="btn btn-success">
+                                <localize key="buttons_save">Save</localize>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </umb-panel>
+</form>
