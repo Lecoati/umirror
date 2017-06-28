@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>uMirror</id>
+        <version>1.0.0.2108</version>
+        <title>Umbraco uMirror</title>
+        <authors>Novicell</authors>
+        <owners>Novicell</owners>
+        <projectUrl>http://www.novicell.es/</projectUrl>
+        <description>Umbarco uMirror</description>
+        <summary>Umbarco uMirror</summary>
+        <language>en-US</language>
+		    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <tags>Umbraco</tags>
+		<iconUrl>http://lecoati.com/images/logo_umirror.png</iconUrl>
+		<dependencies />
+    </metadata>
+	  <files>
+		<file src="Src\uMirror.web\App_Plugins\uMirror\**\*.*" target="Content\App_Plugins\uMirror" /> 
+		<file src="Src\uMirror.web\bin\uMirror.core.dll" target="lib\uMirror.core.dll" /> 
+	  </files>
+</package>
