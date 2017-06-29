@@ -57,7 +57,7 @@
 
                     <umb-control-group label="Parent node" description="The node where the synchronized nodes will be appended'">
                         <div ng-show="project.UmbRootNode">
-                            <i class="icon icon-delete red hover-show pull-left" ng-click="project.UmbRootNode = undefined"></i>
+                            <i class="icon icon-delete red hover-show pull-left" ng-click="removeParent()"></i>
                             <i class="icon {{project.UmbRootNode.Icon}} hover-hide"></i>
                             <a href prevent-default ng-click="setParent()">{{project.UmbRootNode.Name}}</a>
                         </div>
