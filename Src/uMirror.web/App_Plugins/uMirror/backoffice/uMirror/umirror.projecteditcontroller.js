@@ -44,20 +44,25 @@
             }
         } 
 
-	    $scope.setParent = function () {
-	        dialogService.treePicker({
-	            multiPicker: false,
-	            section: "content",
-	            treeAlias: "content",
-	            startNodeId: -1,
-	            callback: function (item) {
-	                $scope.project.UmbRootId = item.id;
-	                $scope.project.UmbRootNode = {
-	                    Id: item.id,
-	                    Icon: item.icon,
-	                    Name: item.name
-	                };
-	            }
+        $scope.removeParent = function () {
+            $scope.project.UmbRootId = -1;
+            $scope.project.UmbRootNode = undefined;
+        }
+
+        $scope.setParent = function () {
+            dialogService.treePicker({
+                multiPicker: false,
+                section: "content",
+                treeAlias: "content",
+                startNodeId: -1,
+                callback: function (item) {
+                    $scope.project.UmbRootId = item.id;
+                    $scope.project.UmbRootNode = {
+                        Id: item.id,
+                        Icon: item.icon,
+                        Name: item.name
+                    };
+                }
             });
 	    };
 
