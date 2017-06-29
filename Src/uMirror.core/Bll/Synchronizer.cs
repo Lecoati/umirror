@@ -290,7 +290,7 @@ namespace uMirror.core.Bll
                         // Init value
                         IList<Node> currentFirstNodes = project.Nodes.Where(r => r.ParentId == -1).ToList(); // First nodes
                         preview = (bool)project.Preview; // Preview
-                        rootParentId = (int)project.UmbRootId; // root parent Id
+                        rootParentId = project.UmbRootId != null ? project.UmbRootId.Value : rootParentId; // root parent Id
 
                         // Raising before_sync event
                         // Util.UpdateStateAndLogs( _projectName, Util.LogType.info, "Raising before_sync event", true);
@@ -314,7 +314,7 @@ namespace uMirror.core.Bll
                             IEnumerable<XElement> xIElFrom = null;
 
                             string xpath = "";
-                            string xpathUmbraco = "//* [@id=" + project.UmbRootId.ToString() + "]";
+                            string xpathUmbraco = "//* [@id=" + rootParentId.ToString() + "]";
 
 
                             // Start synchronization
