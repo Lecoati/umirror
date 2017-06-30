@@ -425,8 +425,14 @@ namespace uMirror.core.Bll
                     {
                         IEnumerable<XElement> e;
                         e = xIElFrom.Where(p => p.CreateNavigator().SelectSingleNode(parent.XmlIdentifierXPath).Value == (string)xIndex.Element(parent.UmbIdentifierProperty));
-                        if (e.Count() > 0)
-                            xIElFromSelect = xIElFrom.Where(p => p.CreateNavigator().SelectSingleNode(parent.XmlIdentifierXPath).Value == (string)xIndex.Element(parent.UmbIdentifierProperty)).First().XPathSelectElements(xpath);
+                        if (e.Count() > 0) {
+                            var selectedElement = xIElFrom.Where(p => p.CreateNavigator().SelectSingleNode(parent.XmlIdentifierXPath).Value == (string)xIndex.Element(parent.UmbIdentifierProperty)).First();
+
+                            XmlDocument innerXmlDoc = new XmlDocument();
+                            innerXmlDoc.LoadXml(selectedElement.ToString());
+
+                            xIElFromSelect = innerXmlDoc.SelectNodes(xpath).Cast<XmlElement>().Select(x => XElement.Parse(x.OuterXml));
+                        }
                     }
                     else
                         xIElFromSelect = xElSource.XPathSelectElements(xpath);
@@ -476,9 +482,9 @@ namespace uMirror.core.Bll
             if (appCancel) return;
 
             // synchronize 
-            IEnumerable<String> itemToUpdate = null;
-            IEnumerable<String> itemToDelete = null;
-            IEnumerable<String> itemToAdd = null;
+            IEnumerable<String> itemToUpdate = new List<String>();
+            IEnumerable<String> itemToDelete = new List<String>();
+            IEnumerable<String> itemToAdd = new List<String>();
 
             // get pending operation
             ContentType DocType = (ContentType)cts.GetContentType(node.UmbDocumentTypeAlias);
@@ -537,7 +543,7 @@ namespace uMirror.core.Bll
         {
 
             // Get an identifiers list from xfrom
-            var xFormId = xFrom.Select(p => p.CreateNavigator().SelectSingleNode(node.XmlIdentifierXPath, xnm).Value);
+            var xFormId = xFrom.Select(p => p.CreateNavigator().SelectSingleNode(node.XmlIdentifierXPath, xnm)?.Value);
 
             // Get an identifiers list from xto
             IEnumerable<XElement> umbracoId;
@@ -547,15 +553,17 @@ namespace uMirror.core.Bll
 
             if (!(bool)node.OnlyAdd)
             {
-                itemToAdd = xFormId.Except(umbracoId.Select(r => (string)r.Element(node.UmbIdentifierProperty)));
+                if (xFormId != null && xFormId.Any()) {
+                    itemToAdd = xFormId.Except(umbracoId.Select(r => (string)r.Element(node.UmbIdentifierProperty)));
 
-                // Get items to delete, duplicate and empty node
-                itemToDelete = umbracoId.Where(r => !xFormId.Contains((string)r.Element(node.UmbIdentifierProperty))).Select(r => r.Attribute("id").Value);
-                itemToDelete = itemToDelete.Concat(xTo.GroupBy(i => (string)i.Element(node.UmbIdentifierProperty)).Where(g => g.Count() > 1).SelectMany(g => g.Skip(1)).Select(r => r.Attribute("id").Value));
-                itemToDelete = itemToDelete.Concat(xTo.Where(p => p.Name == nodeTypeAlias && string.IsNullOrEmpty((string)p.Element(node.UmbIdentifierProperty))).Select(r => r.Attribute("id").Value));
-                itemToDelete = itemToDelete.Distinct();
+                    // Get items to delete, duplicate and empty node
+                    itemToDelete = umbracoId.Where(r => !xFormId.Contains((string)r.Element(node.UmbIdentifierProperty))).Select(r => r.Attribute("id").Value);
+                    itemToDelete = itemToDelete.Concat(xTo.GroupBy(i => (string)i.Element(node.UmbIdentifierProperty)).Where(g => g.Count() > 1).SelectMany(g => g.Skip(1)).Select(r => r.Attribute("id").Value));
+                    itemToDelete = itemToDelete.Concat(xTo.Where(p => p.Name == nodeTypeAlias && string.IsNullOrEmpty((string)p.Element(node.UmbIdentifierProperty))).Select(r => r.Attribute("id").Value));
+                    itemToDelete = itemToDelete.Distinct();
 
-                itemToUpdate = xFormId.Intersect(umbracoId.Select(r => (string)r.Element(node.UmbIdentifierProperty)));
+                    itemToUpdate = xFormId.Intersect(umbracoId.Select(r => (string)r.Element(node.UmbIdentifierProperty)));
+                }
             }
             else
             {
