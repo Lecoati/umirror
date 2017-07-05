@@ -94,7 +94,8 @@ namespace uMirror.core.Controllers
             .GetAllContentTypes()
             .Select(dt => new DocumentType()
             {
-                Alias = dt.Name,
+                Name = dt.Name,
+                Alias = dt.Alias,
                 Id = dt.Id,
                 Icon = dt.Icon
             });
@@ -160,8 +161,10 @@ namespace uMirror.core.Controllers
 
         private IList<PropertyType> LoadDdlUmbIdentifierProperty(string docTypeAlias)
         {
+            var allContentTypes = ApplicationContext.Current.Services.ContentTypeService.GetContentTypesDtd();
+
             ContentType docType = (ContentType)ApplicationContext.Current.Services.ContentTypeService.GetContentType(docTypeAlias);
-            return docType.CompositionPropertyTypes.ToList();
+            return docType?.CompositionPropertyTypes.ToList();
         }
 
         #endregion

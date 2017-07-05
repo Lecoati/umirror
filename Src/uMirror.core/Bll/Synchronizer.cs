@@ -428,10 +428,10 @@ namespace uMirror.core.Bll
                         if (e.Count() > 0) {
                             var selectedElement = xIElFrom.Where(p => p.CreateNavigator().SelectSingleNode(parent.XmlIdentifierXPath).Value == (string)xIndex.Element(parent.UmbIdentifierProperty)).First();
 
-                            XmlDocument innerXmlDoc = new XmlDocument();
-                            innerXmlDoc.LoadXml(selectedElement.ToString());
+                            XElement xIElFromSelectTest = XElement.Parse(selectedElement.ToString());
 
-                            xIElFromSelect = innerXmlDoc.SelectNodes(xpath).Cast<XmlElement>().Select(x => XElement.Parse(x.OuterXml));
+                            xIElFromSelect = xIElFromSelectTest.XPathSelectElements(xpath);
+//                            xIElFromSelect = innerXmlDoc.SelectNodes(xpath).Cast<XmlElement>().Select(x => XElement.Parse(x.OuterXml));
                         }
                     }
                     else
@@ -443,7 +443,7 @@ namespace uMirror.core.Bll
                     // Start sync
                     if (xIElFromSelect != null)
                     {
-                        syn(xIElFromSelect, xIELTo, (ContentType)cts.GetContentType(doc.Alias), currentNode, (int)xIndex.Attribute("id"), (bool)project.LogAllAction);
+                        syn(xIElFromSelect, xIELTo, (ContentType)cts.GetContentType(doc.Alias), currentNode, xIndex, (bool)project.LogAllAction);
 
                         // Concat all child
                         if (xIElFromForChild == null)
@@ -475,7 +475,7 @@ namespace uMirror.core.Bll
         /// <summary>
         /// 
         /// </summary>
-        private void syn(IEnumerable<XElement> xFrom, IEnumerable<XElement> xUmbraco, ContentType dt, Node node, int fatherNodeId, bool addToLog)
+        private void syn(IEnumerable<XElement> xFrom, IEnumerable<XElement> xUmbraco, ContentType dt, Node node, XElement fatherNode, bool addToLog)
         {
 
             // Syncronization Canceled
@@ -486,12 +486,14 @@ namespace uMirror.core.Bll
             IEnumerable<String> itemToDelete = new List<String>();
             IEnumerable<String> itemToAdd = new List<String>();
 
+            var fatherNodeId = (int)fatherNode.Attribute("id");
+
             // get pending operation
             ContentType DocType = (ContentType)cts.GetContentType(node.UmbDocumentTypeAlias);
             String fatherName = fatherNodeId > 1 ? ((Content)cs.GetById(fatherNodeId)).Name : "Root";
 
             Util.UpdateStateAndLogs(_projectName, Util.LogType.info, "Comparing " + DocType.Name + " under " + fatherName, false);
-            getPendingOperation(xFrom, xUmbraco, node, ref itemToUpdate, ref itemToDelete, ref itemToAdd);
+            getPendingOperation(xFrom, xUmbraco, node, fatherNode, ref itemToUpdate, ref itemToDelete, ref itemToAdd);
 
             //Update in Umbraco
             if (itemToDelete.Count() + itemToUpdate.Count() + itemToAdd.Count() > 0)
@@ -537,6 +539,7 @@ namespace uMirror.core.Bll
         private void getPendingOperation(IEnumerable<XElement> xFrom,
                                     IEnumerable<XElement> xTo,
                                     Node node,
+                                    XElement fatherNode,
                                     ref IEnumerable<String> itemToUpdate,
                                     ref IEnumerable<String> itemToDelete,
                                     ref IEnumerable<String> itemToAdd)
@@ -551,10 +554,14 @@ namespace uMirror.core.Bll
             string nodeTypeAlias = DocType.Alias;
             umbracoId = xTo.Where(p => p.Name == nodeTypeAlias && (string)p.Element(node.UmbIdentifierProperty) != "").Select(r => r);
 
+            //TODO add this as an option. existingUmbracoId vs umbracoId. All types or only the ones as a destination.
+            var xIELTo = fatherNode.XPathSelectElements(".//*[@nodeTypeAlias]");
+            var existingUmbracoId = xIELTo.Where(p => (string)p.Element(node.UmbIdentifierProperty) != "").Select(r => r);
+
             if (!(bool)node.OnlyAdd)
             {
                 if (xFormId != null && xFormId.Any()) {
-                    itemToAdd = xFormId.Except(umbracoId.Select(r => (string)r.Element(node.UmbIdentifierProperty)));
+                    itemToAdd = xFormId.Except(existingUmbracoId.Select(r => (string)r.Element(node.UmbIdentifierProperty)));
 
                     // Get items to delete, duplicate and empty node
                     itemToDelete = umbracoId.Where(r => !xFormId.Contains((string)r.Element(node.UmbIdentifierProperty))).Select(r => r.Attribute("id").Value);

@@ -15,6 +15,6 @@ namespace uMirror.core.Models
         public int Id { get; set; }
 
         public string Icon { get; set; }
-
+        public string Name { get; internal set; }
     }
 }
