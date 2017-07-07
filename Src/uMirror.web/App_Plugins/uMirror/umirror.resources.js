@@ -22,6 +22,9 @@
         getProxyMethods: function () {
             return $http.get("backoffice/uMirror/uMirrorApi/GetProxyMethods");
         },
+        testProxyMethod: function (name) {
+            return $http.get("backoffice/uMirror/uMirrorApi/GetTestProxyMethod?proxyMethodName=" + name);
+        },
         getDocumentTypes: function () {
             return $http.get("backoffice/uMirror/uMirrorApi/GetDocumentTypes");
         },

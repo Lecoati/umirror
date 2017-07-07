@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using uMirror.core.DataStore;
 using uMirror.core.Models;
 using uMirror.core.Bll;
+using System.Web.Http;
 
 namespace uMirror.core.Controllers
 {
@@ -85,6 +86,23 @@ namespace uMirror.core.Controllers
 
             return result;
 
+        }
+
+        public string GetTestProxyMethod(string proxyMethodName)
+        {
+            try
+            {
+                var sync = new Synchronizer()
+                {
+                    context = HttpContext.Current
+                };
+                sync.startTestMethod(proxyMethodName);
+                return "done";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public IEnumerable<DocumentType> GetDocumentTypes()
@@ -205,6 +223,8 @@ namespace uMirror.core.Controllers
         {
 
             string state = Synchronizer.appState.ToString();
+            if (Synchronizer.appTesting) return state;
+
             if (Synchronizer.appCancel) return "Canceling process, please wait ... ";
 
             if (Synchronizer.appLock)

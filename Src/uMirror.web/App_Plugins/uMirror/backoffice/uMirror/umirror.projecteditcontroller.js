@@ -1,17 +1,19 @@
 ﻿angular.module("umbraco").controller("umirror.projecteditcontroller",
-	function ($scope, $routeParams, umirrorResources, notificationsService, navigationService, dialogService) {
+    function ($scope, $routeParams, umirrorResources, notificationsService, navigationService, dialogService) {
 
-        $scope.loaded = false;  
+        $scope.loaded = false;
         $scope.isAppLock = false;
+        $scope.testing = false;
         $scope.canceled = false;
         $scope.log = [];
-        
+
         var refreshAppState = function () {
             $scope.$apply(function () {
                 umirrorResources.getapplock().then(function (response) {
                     $scope.isAppLock = JSON.parse(response.data);
 
                     if (!$scope.isAppLock) {
+                        $scope.testing = false;
                         clearInterval($scope.refreshAppStateInterval);
                     }
                 });
@@ -26,10 +28,12 @@
                     $scope.currentAppNum = currentAppNum;
                 });
             });
-        } 
+        }
 
         var init = function () {
-            $scope.proxyMethods = umirrorResources.getProxyMethods();
+            umirrorResources.getProxyMethods().then(function (response) {
+                $scope.proxyMethods = response.data;
+            });
 
             if ($routeParams.id == -1) {
                 $scope.project = {};
@@ -42,7 +46,7 @@
                     $scope.loaded = true;
                 });
             }
-        } 
+        }
 
         $scope.removeParent = function () {
             $scope.project.UmbRootId = -1;
@@ -64,15 +68,28 @@
                     };
                 }
             });
-	    };
+        };
 
-	    $scope.save = function (project) {
-	        umirrorResources.saveProject(project).then(function (response) {
-	            $scope.project = response.data;
-	            $scope.projectForm.$dirty = false;
-	            navigationService.syncTree({ tree: 'uMirror', path: [-1, -1], forceReload: true });
-	            notificationsService.success("Success", $scope.project.Name + " has been saved");
-	        });
+        $scope.testProxyMethod = function (proxyMethodFilePath) {
+            var i = 0, len = $scope.proxyMethods.length, proxyMethodName;
+            for (i; i < len; i++) {
+                if ($scope.proxyMethods[i].FilePath === proxyMethodFilePath) {
+                    proxyMethodName = $scope.proxyMethods[i].Name;
+                }
+            }
+
+            $scope.testing = true;
+            umirrorResources.testProxyMethod(proxyMethodName);
+            $scope.refreshAppStateInterval = setInterval(refreshAppState, 500);
+        }
+
+        $scope.save = function (project) {
+            umirrorResources.saveProject(project).then(function (response) {
+                $scope.project = response.data;
+                $scope.projectForm.$dirty = false;
+                navigationService.syncTree({ tree: 'uMirror', path: [-1, -1], forceReload: true });
+                notificationsService.success("Success", $scope.project.Name + " has been saved");
+            });
         };
 
         $scope.cancel = function () {
@@ -96,4 +113,4 @@
             }
         });
 
-	});
+    });
