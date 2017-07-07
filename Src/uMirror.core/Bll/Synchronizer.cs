@@ -16,6 +16,7 @@ using Umbraco.Core;
 using Umbraco.Core.Services;
 using Umbraco.Core.Models;
 using uMirror.core.DataStore;
+using uMirror.core.Models;
 
 namespace uMirror.core.Bll
 {
@@ -31,7 +32,8 @@ namespace uMirror.core.Bll
         {
             update,
             delete,
-            add
+            add,
+            test
         }
 
         #region Public properties
@@ -89,6 +91,19 @@ namespace uMirror.core.Bll
                 catch { return false; }
             }
         }
+        public static bool appTesting
+        {
+            set
+            {
+                _context.Application["Synchronizer_testing"] = value;
+            }
+            get
+            {
+                try { return (bool)_context.Application["Synchronizer_testing"]; }
+                catch { return false; }
+            }
+        }
+
         public static bool appLock
         {
             set 
@@ -233,6 +248,35 @@ namespace uMirror.core.Bll
             MethodInfo method = Store.GetProjectMethod(assemblyRef);
             if (method != null) method.Invoke(null, null);
             else throw new Exception("uMirror extension method not found");
+        }
+
+        /// <summary>
+        /// Prepare test of extension method
+        /// </summary>
+        public void startTestMethod(string proxyMethodName) {
+            if (HttpContext.Current == null) HttpContext.Current = _context;
+
+            try {
+                appTesting = true;
+                appLock = true;
+                appState = string.Format("Testing proxy method: {0}", proxyMethodName);
+
+                var methodInfos = Store.GetMethods();
+                var result = new List<ProxyMethod>();
+
+                var methodInfo = methodInfos.FirstOrDefault(m => m.Name.Equals(proxyMethodName));
+                if (methodInfo != null) methodInfo.Invoke(null, null);
+                else throw new Exception("uMirror extension method not found");
+            }
+            catch (Exception ex)
+            {
+                Util.UpdateStateAndLogs(_projectName, Util.LogType.error, "Method test was stopped by an error", true, ex, true);
+            }
+            finally
+            {
+                appTesting = false;
+                appLock = false;
+            }
         }
 
         /// <summary>

@@ -29,7 +29,7 @@
                             <img src="/App_Plugins/uMirror/images/ajax-loader.gif" style="margin-right:5px" />
                             <span ng-bind-html="currentAppNum"></span>
                         </div>
-                        <button type="button" ng-click="cancel()" class="btn btn-danger">
+                        <button type="button" ng-hide="testing" ng-click="cancel()" class="btn btn-danger">
                             Cancel
                         </button>
                     </umb-control-group>
@@ -48,10 +48,11 @@
                 <div class="umb-pane">
 
                     <umb-control-group label="Xml File Path" description="Ex: /App_Data/MyData.xml">
-                        <select name="dropDownList" style="width: 200px;" ng-model="model.value" ng-options="item.id as item.value for item in model.config.items">
+                        <select name="dropDownList" style="width: 200px;" ng-model="model.value" ng-options="item.FilePath as item.Name for item in proxyMethods">
                             <option value="">none</option>
                         </select>
                         <input type="text" style="width: 200px;" ng-model="project.XmlFileName" required />
+                        <a href="" ng-click="testProxyMethod(model.value)" ng-if="model.value" style="line-height: 30px;margin-left: 10px;">Test method</a>
                         <img id="runSelectedMethodWait" src="/umbraco/plugins/uMirror/images/ajax-loader.gif" style="display:none;" />
                     </umb-control-group>
 
