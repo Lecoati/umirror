@@ -70,16 +70,16 @@
             });
         };
 
-        $scope.testProxyMethod = function (proxyMethodFilePath) {
-            var i = 0, len = $scope.proxyMethods.length, proxyMethodName;
+        $scope.testProxyMethod = function (proxyMethodAssemblyRef) {
+            var i = 0, len = $scope.proxyMethods.length, proxyMethodAssembly;
             for (i; i < len; i++) {
-                if ($scope.proxyMethods[i].FilePath === proxyMethodFilePath) {
-                    proxyMethodName = $scope.proxyMethods[i].Name;
+                if ($scope.proxyMethods[i].AssemblyRef === proxyMethodAssemblyRef) {
+                    proxyMethodAssembly = $scope.proxyMethods[i].Name;
                 }
             }
 
             $scope.testing = true;
-            umirrorResources.testProxyMethod(proxyMethodName);
+            umirrorResources.testProxyMethod(proxyMethodAssembly);
             $scope.refreshAppStateInterval = setInterval(refreshAppState, 500);
         }
 

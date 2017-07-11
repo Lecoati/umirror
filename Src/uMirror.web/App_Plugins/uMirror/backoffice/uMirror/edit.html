@@ -48,11 +48,11 @@
                 <div class="umb-pane">
 
                     <umb-control-group label="Xml File Path" description="Ex: /App_Data/MyData.xml">
-                        <select name="dropDownList" style="width: 200px;" ng-model="model.value" ng-options="item.FilePath as item.Name for item in proxyMethods">
+                        <select name="dropDownList" style="width: 200px;" ng-model="project.ExtensionMethod" ng-options="item.AssemblyRef as item.Name for item in proxyMethods">
                             <option value="">none</option>
                         </select>
                         <input type="text" style="width: 200px;" ng-model="project.XmlFileName" required />
-                        <a href="" ng-click="testProxyMethod(model.value)" ng-if="model.value" style="line-height: 30px;margin-left: 10px;">Test method</a>
+                        <a href="" ng-click="testProxyMethod(project.ExtensionMethod)" ng-if="project.ExtensionMethod" style="line-height: 30px;margin-left: 10px;">Test method</a>
                         <img id="runSelectedMethodWait" src="/umbraco/plugins/uMirror/images/ajax-loader.gif" style="display:none;" />
                     </umb-control-group>
 

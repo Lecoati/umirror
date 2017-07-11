@@ -8,6 +8,8 @@ using Umbraco.Core.Logging;
 using Umbraco.Core;
 using Umbraco.Core.Services;
 using Umbraco.Core.Models;
+using System.Collections.Generic;
+using System.Web.Helpers;
 
 namespace uMirror.core.Bll
 {
@@ -93,6 +95,23 @@ namespace uMirror.core.Bll
             }
         }
 
+        public static string GetMediaFilePath(Umbraco.Core.Models.IMedia media)
+        {
+            string propertyFile = media.HasProperty("umbracoFile") ? media.GetValue("umbracoFile").ToString() : null;
+
+            try
+            {
+                dynamic data = Json.Decode(propertyFile);
+                propertyFile = data.src;
+            }
+            catch (System.ArgumentException ex)
+            {
+                return propertyFile.ToString();
+            }
+
+            return propertyFile.ToString();
+        }
+
         public static int SaveMedia(String imagePath, int mediaParent, Umbraco.Core.Models.Media media = null)
         {
 
@@ -106,9 +125,19 @@ namespace uMirror.core.Bll
             string fileExtension = Path.GetExtension(imagePath).Replace(".", "");
             string fileWithoutExtension = fileName.Replace(Path.GetExtension(imagePath), "");
 
-            Umbraco.Core.Models.Media existFile = (Umbraco.Core.Models.Media)ms.GetChildren(mediaParent).FirstOrDefault(r => r.HasProperty("umbracoFile")
-                && Path.GetFileName(r.GetValue("umbracoFile").ToString()).ToLower() == fileName.ToLower().Replace(" ", "-")
-                && FileCompare(HttpContext.Current.Server.MapPath(r.GetValue("umbracoFile").ToString()), imagePath));
+            Umbraco.Core.Models.Media existFile = null;
+
+            foreach (IMedia md in ms.GetChildren(mediaParent))
+            {
+                var currentFileName = GetMediaFilePath(md);
+
+                if (md.HasProperty("umbracoFile") &&
+                    currentFileName.Split('/').Last().ToLower() == fileName.ToLower().Replace(" ", "-") &&
+                    FileCompare(HttpContext.Current.Server.MapPath(currentFileName), imagePath))
+                {
+                    return md.Id;
+                }
+            }
 
             if (existFile != null) 
                 return existFile.Id;
