@@ -102,7 +102,6 @@
             $scope.isAppLock = JSON.parse(response.data);
             if ($scope.isAppLock) {
                 $scope.refreshAppStateInterval = setInterval(refreshAppState, 500);
-                $scope.proxyMethods = umirrorResources.getProxyMethods();
                 umirrorResources.getProjectById($routeParams.id.replace("project_", "")).then(function (response) {
                     $scope.project = response.data;
                     $scope.loaded = true;
