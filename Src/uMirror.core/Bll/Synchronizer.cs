@@ -954,6 +954,12 @@ namespace uMirror.core.Bll
                                     doc.SetPropertyValue(prop.UmbPropertyAlias, value);
                                     break;
 
+                                case "00000000-556d-6272-6163-6f2e47726964": // Grid
+                                    if (doc.GetValue(prop.UmbPropertyAlias) == null)
+                                    {
+                                        doc.SetPropertyValue(prop.UmbPropertyAlias, xFrom.CreateNavigator().SelectSingleNode(prop.XmlPropertyXPath, xnm).Value);
+                                    }
+                                    break;
                                 case "a52c7c1c-c330-476e-8605-d63d3b84b6a6": // RadioButton List
                                 case "23e93522-3200-44e2-9f29-e61a6fcbb79a": // Date
                                 case "60b7dabf-99cd-41eb-b8e9-4d2e669bbde9": // Simple Editor
