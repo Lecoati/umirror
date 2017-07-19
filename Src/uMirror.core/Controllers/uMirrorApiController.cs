@@ -153,9 +153,13 @@ namespace uMirror.core.Controllers
             if (System.IO.File.Exists(xmlFilePath))
             {
                 XDocument currentDoc = XDocument.Load(xmlFilePath);
-                foreach (var name in currentDoc.Root.DescendantNodes().OfType<XElement>().Select(
 
-                    x => !string.IsNullOrEmpty(x.GetPrefixOfNamespace(x.Name.Namespace)) ? x.GetPrefixOfNamespace(x.Name.Namespace) + ":" + x.Name.LocalName : x.Name.LocalName).Distinct())
+                var candidateElements = currentDoc.Root.DescendantNodes().OfType<XElement>()
+                    .Select(x => !string.IsNullOrEmpty(x.GetPrefixOfNamespace(x.Name.Namespace)) ? 
+                                    x.GetPrefixOfNamespace(x.Name.Namespace) + ":" + x.Name.LocalName : 
+                                    x.Name.LocalName).Distinct();
+
+                foreach (var name in candidateElements)
                 {
                     elements.Add(name);
                     string cleanName = name.Substring(name.LastIndexOf(":") + 1);

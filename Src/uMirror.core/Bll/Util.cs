@@ -99,17 +99,21 @@ namespace uMirror.core.Bll
         {
             string propertyFile = media.HasProperty("umbracoFile") ? media.GetValue("umbracoFile").ToString() : null;
 
-            try
-            {
-                dynamic data = Json.Decode(propertyFile);
-                propertyFile = data.src;
-            }
-            catch (System.ArgumentException ex)
-            {
+            if (!string.IsNullOrEmpty(propertyFile)) {
+                try
+                {
+                    dynamic data = Json.Decode(propertyFile);
+                    propertyFile = data.src;
+                }
+                catch (System.ArgumentException ex)
+                {
+                    return propertyFile.ToString();
+                }
+
                 return propertyFile.ToString();
             }
 
-            return propertyFile.ToString();
+            return null;
         }
 
         public static int SaveMedia(String imagePath, int mediaParent, Umbraco.Core.Models.Media media = null)
@@ -131,11 +135,13 @@ namespace uMirror.core.Bll
             {
                 var currentFileName = GetMediaFilePath(md);
 
-                if (md.HasProperty("umbracoFile") &&
-                    currentFileName.Split('/').Last().ToLower() == fileName.ToLower().Replace(" ", "-") &&
-                    FileCompare(HttpContext.Current.Server.MapPath(currentFileName), imagePath))
-                {
-                    return md.Id;
+                if (!string.IsNullOrEmpty(currentFileName)) {
+                    if (md.HasProperty("umbracoFile") &&
+                        currentFileName.Split('/').Last().ToLower() == fileName.ToLower().Replace(" ", "-") &&
+                        FileCompare(HttpContext.Current.Server.MapPath(currentFileName), imagePath))
+                    {
+                        return md.Id;
+                    }
                 }
             }
 
