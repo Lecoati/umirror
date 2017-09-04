@@ -333,9 +333,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
@@ -392,6 +389,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Plugins\uMirror\images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

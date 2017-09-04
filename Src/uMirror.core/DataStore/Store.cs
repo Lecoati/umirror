@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
@@ -17,6 +18,8 @@ namespace uMirror.core.DataStore
     
     public static class Store
     {
+        private const int NumberOfRetries = 3;
+        private const int DelayOnRetry = 1000;
         private static string _storeDir;
 
         static Store()
@@ -62,18 +65,32 @@ namespace uMirror.core.DataStore
             object data = null;
             GetFileSettings<T>(ref fileName, ref xmlSer);            
             if (File.Exists(_storeDir + fileName))
-            {                
-                try
-                {
-                    using (FileStream fileReader = new FileStream(_storeDir + fileName, FileMode.Open))
+            {
+
+                for (int i=1; i <= NumberOfRetries; ++i) {
+                    try
                     {
-                        data = xmlSer.Deserialize(fileReader);
-                    }                        
+                        using (FileStream fileReader = new FileStream(_storeDir + fileName, FileMode.Open))
+                        {
+                            data = xmlSer.Deserialize(fileReader);
+                        }
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        // You may check error code to filter some exceptions, not every error
+                        // can be recovered.
+                        if (i == NumberOfRetries) // Last one, (re)throw exception and exit
+                        {
+                            LogHelper.Error(MethodBase.GetCurrentMethod().DeclaringType, "[uMirror] db error: " + ex.Message, ex);
+                            throw;
+                        }
+                            
+
+                        Thread.Sleep(DelayOnRetry);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    LogHelper.Error(MethodBase.GetCurrentMethod().DeclaringType, "[uMirror] db error: " + ex.Message, ex);                    
-                }            
+           
             }            
             return data;
         }
@@ -89,9 +106,16 @@ namespace uMirror.core.DataStore
             GetFileSettings<Project>(ref fileName, ref xmlSer);
             Project pr = projects.FirstOrDefault(p => p.id == data.id);
             if (pr != null)
+            {
+                var index = projects.IndexOf(pr);
                 projects.Remove(pr);
-
-            projects.Add (data);
+                projects.Insert(index, data);
+            }
+            else
+            {
+                projects.Add(data);
+            }
+            
             Container.Projects = projects.ToArray();            
             SaveToFile(xmlSer, Container, fileName); 
         }
@@ -115,9 +139,18 @@ namespace uMirror.core.DataStore
             else nodes = new List<Node>();
 
             Node n = nodes.FirstOrDefault(nd => nd.id == data.id);
-            if (n != null) nodes.Remove(n);
 
-            nodes.Add(data);
+            if (n != null)
+            {
+                var index = nodes.IndexOf(n);
+                nodes.Remove(n);
+                nodes.Insert(index, data);
+            }
+            else
+            {
+                nodes.Add(data);
+            }
+
             Container.Nodes = nodes.ToArray();
             SaveToFile(xmlSer, Container, fileName);
         }
